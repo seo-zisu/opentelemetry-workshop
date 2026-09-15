@@ -27,7 +27,6 @@ Please register your self at grafana labs
 
 8. Select **OpenTelemetry (OTLP)** and follow step-by-step process
     - Choose your infrastructure : **Linux**
-    - Choose your instrumentation method : **Manual collector setup** 
     - Create a Grafana Cloud access token : **workshop-otel** 
     - Create token 
     - **⚠️ Please copy the token to be used on the later steps**
