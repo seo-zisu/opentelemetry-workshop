@@ -26,10 +26,8 @@ Please register your self at grafana labs
 7. **Activate Application Observability** and click **Connect data** 
 
 8. Select **OpenTelemetry (OTLP)** and follow step-by-step process
-    - Choose your instrumentation method : **OpenTelemetry SDK**
-    - Choose your language : **Other**
     - Choose your infrastructure : **Linux**
-    - Choose your instrumentation method : **Grafana Alloy** 
+    - Choose your instrumentation method : **Manual collector setup** 
     - Create a Grafana Cloud access token : **workshop-otel** 
     - Create token 
     - **⚠️ Please copy the token to be used on the later steps**
