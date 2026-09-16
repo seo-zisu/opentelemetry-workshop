@@ -16,12 +16,43 @@ import (
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/codes"
+	//파트1-2. opentelemetry 패키지 추가
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/metric"
 )
 
 var (
 	tracer = otel.Tracer(schemaName)
 	logger = otelslog.NewLogger(schemaName)
+	//파트1-3. meter 객체와 카운터 전역 변수 선언부 
+	meter = otel.Meter(schemaName)
+
+	gamesStartedCounter   metric.Int64Counter
+	gamesCompletedCounter metric.Int64Counter
 )
+
+//파트1-4. 메트릭 카운터를 초기화하는 init() 함수 코드 추가 
+func init() {
+    var err error
+
+    gamesStartedCounter, err = meter.Int64Counter(
+        "games.started",
+        metric.WithDescription("Number of games started"),
+        metric.WithUnit("{call}"),
+    )
+    if err != nil {
+        panic(err)
+    }
+
+    gamesCompletedCounter, err = meter.Int64Counter(
+        "games.completed",
+        metric.WithDescription("Number of games completed"),
+        metric.WithUnit("{call}"),
+    )
+    if err != nil {
+        panic(err)
+    }
+}
 
 type gameRequest struct {
 	Name string `json:"name"`
@@ -36,6 +67,8 @@ type gameResponse struct {
 
 func gameserver(w http.ResponseWriter, r *http.Request) {
 	ctx, span := tracer.Start(r.Context(), "play") // Begin a new child span called 'play'
+	//파트1-5. 게임이 시작될 때 카운터를 1 증가시키는 로직 추가 
+	gamesStartedCounter.Add(r.Context(), 1, metric.WithAttributes())
 	defer span.End()
 
 	var req gameRequest
@@ -67,6 +100,11 @@ func gameserver(w http.ResponseWriter, r *http.Request) {
 	}
 
 	resultCode, resultString, err := getResult(playerRoll, computerRoll)
+	// 파트 2-2.커스텀 속성 추가 
+	gameResultAttr := attribute.String("game.result", resultCode)
+	span.SetAttributes(gameResultAttr)
+	//파트1-6. 스팬 속성부여 코드 
+	gamesCompletedCounter.Add(r.Context(), 1, metric.WithAttributes(attribute.String("winner", resultCode)))
 	msg2 := fmt.Sprintf("Game result was %s", resultCode)
 	logger.InfoContext(ctx, msg2)
 

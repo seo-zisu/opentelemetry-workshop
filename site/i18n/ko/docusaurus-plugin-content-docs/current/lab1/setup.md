@@ -26,10 +26,8 @@ Grafana Labs에 직접 등록해 주세요.
 7. **Application Observability 활성화** 후 **데이터 연결**을 클릭하세요.
 
 8. **OpenTelemetry (OTLP)**를 선택하고 단계별 절차를 따르세요.
-    - 계측 방법 선택: **OpenTelemetry SDK**
-    - 언어 선택: **Other**
     - 인프라 선택: **Linux**
-    - 계측 방법 선택: **Grafana Alloy** 
+    - 계측 방법 선택: **Manual collector setup** 
     - Grafana Cloud 액세스 토큰 생성: **workshop-otel** 
     - 토큰 생성 
     - **⚠️ 이후 단계에서 사용할 토큰을 복사해 두세요.**
